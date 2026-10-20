@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC IT Day 2026 - Fixed Chat</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#f1f5f9;color:#0f172a}
+nav{background:#0f172a;color:white;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
+.hero{background:linear-gradient(135deg,#0f172a,#1e40af);color:white;text-align:center;padding:30px 14px}
+.hero h1 span{color:#facc15}
+.container{max-width:1200px;margin:auto;padding:12px;display:grid;grid-template-columns:1.25fr 0.75fr;gap:12px}
+@media(max-width:900px){.container{grid-template-columns:1fr}}
+.cat{font-size:12px;font-weight:800;color:#1e40af;margin:14px 0 6px;padding-left:6px;border-left:4px solid #facc15}
+.osBox{background:white;border-radius:18px;padding:14px;box-shadow:0 4px 16px rgba(0,0,0,.06);border-left:5px solid #e2e8f0;cursor:pointer}
+.osBox.active{border-left-color:#2563eb}
+.osHead{display:flex;align-items:center;gap:10px}
+.icon{font-size:26px;width:46px;height:46px;background:#f1f5ff;display:grid;place-items:center;border-radius:12px}
+.evo{display:none;margin-top:12px}.evo.open{display:block}
+.btn{font-size:11px;padding:7px 12px;border-radius:20px;border:none;cursor:pointer;margin-top:8px}.btn-blue{background:#2563eb;color:white;width:100%}
+.gallerySection{max-width:1200px;margin:18px auto;padding:0 12px}
+.galleryBox{background:white;border-radius:18px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.galleryGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.gItem{border-radius:12px;overflow:hidden;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer}
+.gItem img{width:100%;height:110px;object-fit:cover}.gItem p{font-size:11px;padding:6px 8px;text-align:center}
+.chatWrap{background:white;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.1);height:calc(100vh - 100px);position:sticky;top:68px;display:flex;flex-direction:column;overflow:hidden;border:2px solid #1e40af}
+.cHead{background:#1e40af;color:white;padding:14px;display:flex;justify-content:space-between}.cBody{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#f8fafc}
+.msg{padding:11px 13px;border-radius:14px;max-width:90%;font-size:13px;line-height:1.5}.bot{background:white;border:1px solid #e2e8f0}.user{background:#2563eb;color:white;align-self:flex-end}
+.cInput{display:flex;padding:10px;border-top:1px solid #eee;gap:8px}.cInput input{flex:1;border:1px solid #ddd;border-radius:24px;padding:12px 14px;outline:none}.cInput button{background:#2563eb;color:white;border:none;width:44px;height:44px;border-radius:50%;cursor:pointer}
+.suggest{display:flex;flex-wrap:wrap;gap:6px;padding:0 10px 8px}.suggest span{background:#e0e7ff;color:#1e40af;padding:5px 10px;border-radius:20px;font-size:11px;cursor:pointer}
+.lang button{border:1px solid #ffffff50;background:transparent;color:white;padding:4px 9px;border-radius:20px;font-size:11px;margin-left:4px;cursor:pointer}.lang button.active{background:white;color:#0f172a;font-weight:700}
+</style>
+</head>
+<body>
+<nav><div><b style="color:#60a5fa">ECC</b> IT Day 2026</div><div class="lang"><button id="b-si" class="active" onclick="setLang('si')">සිංහල</button><button id="b-sing" onclick="setLang('sing')">Singlish</button><button id="b-en" onclick="setLang('en')">EN</button></div></nav>
+<div class="hero"><h1 id="h1">OS Evolution <span>Fixed Chat</span></h1><p id="sub">Ekak click karama new tab eke table eka open wenawa. Pawathina IT Day photos pahala. Chat eken onama deyak ahanna!</p></div>
+<div class="container"><div class="left" id="left"></div><div class="chatWrap"><div class="cHead"><span id="cT">💬 ECC AI Chat - All Questions</span><span style="font-size:10px;background:#ffffff30;padding:3px 8px;border-radius:10px">AI FIXED</span></div><div class="cBody" id="cBody"></div><div class="suggest" id="suggest"></div><div class="cInput"><input id="cIn" placeholder="Bill Gates kauda kiyala ahanna..." onkeydown="if(event.key==='Enter')send()"><button onclick="send()">➤</button></div></div></div>
+
+<div class="gallerySection"><div class="galleryBox"><div style="font-weight:800">📸 Ape IT Day - Pawathina Events</div><div class="galleryGrid"><div class="gItem"><img src="https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400"><p>IT Day 2023</p></div><div class="gItem"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400"><p>IT Day 2024</p></div><div class="gItem"><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400"><p>Exhibition</p></div></div></div></div>
+
+<script>
+let lang='si';
+const DATA={
+windows:{cat:'DESKTOP',icon:'💻',title:{si:'Windows',sing:'Windows',en:'Windows'},desc:{si:'Microsoft - Desktop 75%',sing:'Microsoft Desktop',en:'Microsoft Desktop'},table:[{year:'1981',ver:{si:'MS-DOS 1.0',sing:'MS-DOS 1.0',en:'MS-DOS 1.0'},detail:{si:'IBM PC ekata Bill Gates haduwa. Kalu screen C:\\> command witharai. RAM 16KB.',sing:'IBM PC ekata, 16KB RAM',en:'For IBM PC by Gates. Black C:\\> only.'}},{year:'2021',ver:{si:'Windows 11',sing:'Win 11',en:'Windows 11'},detail:{si:'Center taskbar, Android apps, TPM 2.0, Widgets.',sing:'Center taskbar, Android apps, TPM',en:'Centered taskbar, Android apps, TPM mandatory.'}}]},
+linux:{cat:'DESKTOP',icon:'🐧',title:{si:'Linux',sing:'Linux',en:'Linux'},desc:{si:'Open Source - Servers 96%',sing:'Open Source',en:'Open Source'},table:[{year:'1991',ver:{si:'Kernel 0.01',sing:'Kernel 0.01',en:'Kernel 0.01'},detail:{si:'Linus Torvalds 21, Helsinki uni hobby project.',sing:'Linus 21, hobby',en:'21-year-old Linus, hobby.'}}]},
+android:{cat:'MOBILE',icon:'🤖',title:{si:'Android',sing:'Android',en:'Android'},desc:{si:'Google - Phone 70%',sing:'Google Phone',en:'Google 70% phones'},table:[{year:'2008',ver:{si:'Android 1.0',sing:'1.0',en:'1.0'},detail:{si:'Google, Linux Kernel, apps 35, notification invention.',sing:'Google, apps 35',en:'Google, Linux Kernel, 35 apps.'}}]},
+ios:{cat:'MOBILE',icon:'📱',title:{si:'iOS',sing:'iOS',en:'iOS'},desc:{si:'Apple iPhone',sing:'Apple iPhone',en:'Apple iPhone'},table:[{year:'2007',ver:{si:'iPhone OS 1',sing:'iPhone OS 1',en:'iPhone OS 1'},detail:{si:'Steve Jobs launch. Multi-touch, no App Store.',sing:'Steve Jobs launch, no App Store',en:'Steve Jobs launch, no App Store.'}}]},
+macos:{cat:'DESKTOP',icon:'🍎',title:{si:'macOS',sing:'macOS',en:'macOS'},desc:{si:'Apple Mac',sing:'Apple Mac',en:'Apple Mac'},table:[{year:'1984',ver:{si:'System 1 - 128K',sing:'System 1 128K',en:'System 1 128K'},detail:{si:'Steve Jobs palamu Mac $2495.',sing:'Steve Jobs Mac $2495',en:'Steve Jobs first Mac $2495.'}}]},
+};
+
+const TXT={
+si:{h1:'OS Evolution <span>Fixed Chat</span>',sub:'Ekak click karama new tab eke table eka open wenawa. Pawathina IT Day photos pahala. Chat eken onama deyak ahanna!',cT:'💬 ECC AI Chat - All Questions',ph:'Bill Gates kauda kiyala ahanna...',sug:['Bill Gates kauda?','Steve Jobs kauda?','Linus Torvalds kauda?','Android vs iOS?','Best OS mokakda?'],gT:'Ape IT Day',gSub:''},
+sing:{h1:'OS Evolution <span>Fixed Chat</span>',sub:'Click - new tab table. Past photos below. Ask anything!',cT:'💬 ECC AI Chat',ph:'Ask anything...',sug:['Bill Gates kauda?','Steve Jobs kauda?','Best OS?'],gT:'',gSub:''},
+en:{h1:'OS Evolution <span>Fixed Chat</span>',sub:'Click - new tab table. Past photos below. Ask anything!',cT:'💬 ECC AI Chat',ph:'Ask anything...',sug:['Who is Bill Gates?','Who is Steve Jobs?','Best OS?'],gT:'',gSub:''}
+};
+
+// FIXED - LOKU KNOWLEDGE BASE - ONAMA PRASHNETA UTHARA DENWA
+const KNOWLEDGE=[
+{k:['bill gates','bill','gates'], si:'Bill Gates yanu Microsoft company eka hadapu kenage. 1955 born, 1975 Paul Allen ekka Microsoft haduwa. Windows, MS-DOS haduwa. Loke richest kenek, dan charity karanawa Gates Foundation eken.', sing:'Bill Gates kiyanne Microsoft hadapu kena machan. 1955 born, 1975 Microsoft haduwa Paul Allen ekka. Windows haduwa, loke richest, dan charity karanawa.', en:'Bill Gates is co-founder of Microsoft. Born 1955, founded Microsoft in 1975 with Paul Allen. Created Windows, MS-DOS. Once richest person, now does charity via Gates Foundation.'},
+{k:['steve jobs','jobs','apple'], si:'Steve Jobs yanu Apple company eka hadapu kena. 1955-2011. iPhone, iMac, iPad, macOS haduwa. 1976 Steve Wozniak ekka Apple haduwa. Pixar company ekath haduwa. Loke innovation king.', sing:'Steve Jobs kiyanne Apple hadapu kena machan. 1955-2011, iPhone, iMac, iPad haduwa. 1976 Apple haduwa Wozniak ekka. Pixar ekath haduwa.', en:'Steve Jobs co-founded Apple. 1955-2011. Created iPhone, iMac, iPad, macOS. Founded Apple in 1976 with Wozniak. Also founded Pixar. Innovation king.'},
+{k:['linus','torvalds','linux'], si:'Linus Torvalds yanu Linux Kernel eka hadapu kena. 1969 Finland born, 1991 Helsinki uni eke 21 years di Linux haduwa hobby project ekak widiyata. Dan Linux supercomputers 100% duwanawa.', sing:'Linus Torvalds kiyanne Linux hadapu kena. 1969 Finland, 1991 uni eke 21 years di hobby project ekak widiyata haduwa. Dan supercomputers 100% Linux.', en:'Linus Torvalds created Linux Kernel. Born 1969 Finland, created Linux in 1991 at age 21 in Helsinki University as hobby project. Now 100% supercomputers run Linux.'},
+{k:['android','google phone'], si:'Android kiyanne Google ge phone OS eka. 2008 HTC Dream eken patan gaththa, Linux Kernel walin haduwa. Market eke apps 35 witharai thibbe, dan Play Store eke million 3k thiyenawa. Phone 70% Android. 2024 Android 15 Gemini AI, Private Space, Satellite SOS.', sing:'Android kiyanne Google ge phone OS eka machan. 2008 HTC Dream, Linux walin, apps 35 witharai thibbe, dan million 3k. Phone 70% Android, 2024 Gemini AI.', en:'Android is Google phone OS. Started 2008 with HTC Dream, built on Linux Kernel. Market had 35 apps, now Play Store has 3M. 70% phones Android. 2024 Android 15 with Gemini AI, Private Space, Satellite SOS.'},
+{k:['ios','iphone os'], si:'iOS kiyanne Apple iPhone OS eka. 2007 Steve Jobs launch kala multi-touch, pinch to zoom. App Store na thibbe, 2008 App Store awa 500 apps. 2024 iOS 18 Apple Intelligence, ChatGPT in Siri, Genmoji, RCS. Secure, smooth.', sing:'iOS kiyanne Apple iPhone OS eka. 2007 Steve Jobs launch, multi-touch, no App Store, 2008 App Store 500 apps, 2024 Apple Intelligence, ChatGPT.', en:'iOS is Apple iPhone OS. 2007 Steve Jobs launch with multi-touch, no App Store. 2008 App Store 500 apps. 2024 iOS 18 Apple Intelligence, ChatGPT in Siri, Genmoji, RCS. Secure, smooth.'},
+{k:['windows','microsoft os'], si:'Windows kiyanne Microsoft ge OS eka. 1981 MS-DOS idan patan, 1985 Win 1.0 GUI, 1995 Start button, 2001 XP 500M users 20 years hit, 2009 Win 7 hamoma asama, 2021 Win 11 center taskbar, Android apps, TPM 2.0. Desktop 75% Windows. Gaming walata best.', sing:'Windows kiyanne Microsoft ge OS eka. 1981 MS-DOS idan 2021 Win 11 wenakan. XP, 7 famous. Desktop 75% Windows. Gaming walata best.', en:'Windows is Microsoft OS. From 1981 MS-DOS to 2021 Win 11. 2001 XP 500M users 20-year hit, 2009 Win 7 most loved, 2021 Win 11 with Android apps, TPM. 75% desktop. Best for gaming.'},
+{k:['best','hodama','mokakda best'], si:'Best OS wadeta anuwa wenas wenawa: Gaming nam Windows 11 (DirectX, drivers), Programming/Servers nam Linux/Ubuntu (free, secure, terminal), Phone customize karanna nam Android, secure & smooth nam iOS, Design/Video editing nam macOS (Final Cut, M chip). Student kenekta Ubuntu best - free, light, programming iganaganna.', sing:'Best OS wadeta anuwa machan. Gaming nam Windows, Programming nam Linux, Phone customize nam Android, secure nam iOS, Design nam macOS. Student nam Ubuntu best - free.', en:'Best OS depends on work: Gaming = Windows 11, Programming/Servers = Linux/Ubuntu (free, secure), Phone customization = Android, secure/smooth = iOS, Design/Video = macOS. For students Ubuntu best - free, light.'},
+{k:['it day','ecc','school'], si:'ECC IT Day kiyanne Eheliyagoda Central College eke IT Club eken karana event ekak. OS Evolution, Coding, Projects, Exhibition thiyenawa. 2023-2025 pawathina events photos pahala gallery eke thiyenawa.', sing:'ECC IT Day kiyanne ape iskole IT Club event eka machan. OS Evolution, Coding, Projects thiyenawa. Photos pahala gallery eke.', en:'ECC IT Day is IT Club event of Eheliyagoda Central College. OS Evolution, Coding, Projects, Exhibition. Past event photos in gallery below.'},
+{k:['computer','pc','laptop'], si:'Computer kiyanne data process karana machine ekak. OS ekak nathuwa computer wada karanne na. OS eken hardware, software manage karanawa. Desktop OS: Windows, Linux, macOS. Mobile OS: Android, iOS.', sing:'Computer kiyanne data process karana machine ekak. OS ekak nathuwa wada karanne na. Desktop: Windows, Linux, macOS. Mobile: Android, iOS.', en:'Computer is machine that processes data. Needs OS to work. OS manages hardware, software. Desktop OS: Windows, Linux, macOS. Mobile OS: Android, iOS.'},
+];
+
+function render(){
+let left=document.getElementById('left'); left.innerHTML='';let lastCat='';
+Object.keys(DATA).forEach(k=>{
+let o=DATA[k];if(o.cat!==lastCat){let cat=document.createElement('div');cat.className='cat';cat.innerText=o.cat==='MOBILE'?'📱 MOBILE OS':'💻 DESKTOP OS';left.appendChild(cat);lastCat=o.cat;}
+let d=document.createElement('div');d.className='osBox';d.id='box-'+k;
+d.innerHTML=`<div class="osHead" onclick="toggle('${k}')"><div class="icon">${o.icon}</div><div><b>${o.title[lang]}</b><br><small style="color:#64748b">${o.desc[lang]}</small></div><span style="margin-left:auto">▼</span></div>
+<div class="evo" id="evo-${k}"><button class="btn btn-blue" onclick="openDetail('${k}')">📄 ${o.title[lang]} - Table eka New Tab eke →</button></div>`;
+left.appendChild(d);
+});
+document.getElementById('h1').innerHTML=TXT[lang].h1;document.getElementById('sub').innerText=TXT[lang].sub;document.getElementById('cT').innerText=TXT[lang].cT;document.getElementById('cIn').placeholder=TXT[lang].ph;
+let sug=document.getElementById('suggest');sug.innerHTML='';TXT[lang].sug.forEach(t=>{let s=document.createElement('span');s.innerText=t;s.onclick=()=>{document.getElementById('cIn').value=t;send();};sug.appendChild(s);});
+}
+function toggle(k){document.getElementById('evo-'+k).classList.toggle('open');document.getElementById('box-'+k).classList.toggle('active')}
+function openDetail(k){
+let o=DATA[k];
+let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${o.title[lang]} - Table</title>
+<style>body{font-family:system-ui;background:#f8fafc;margin:0}.top{background:#0f172a;color:white;padding:32px;text-align:center}.box{max-width:1050px;margin:-20px auto;background:white;border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.1)}table{width:100%;border-collapse:collapse}th{background:#1e40af;color:white;padding:12px;text-align:left;font-size:12px}td{padding:14px;border-bottom:1px solid #eee;font-size:13px;line-height:1.7}tr:nth-child(even) td{background:#f8fafc}.year{background:#0f172a;color:white;padding:5px 12px;border-radius:20px;font-weight:700}</style>
+</head><body><div class="top"><h1>${o.icon} ${o.title[lang]} - Full Table</h1><p>${o.desc[lang]} - ECC IT Day 2026</p></div>
+<div class="box"><table><tr><th>Year</th><th>Version</th><th>Full Details</th></tr>${o.table.map(r=>`<tr><td><span class="year">${r.year}</span></td><td><b>${r.ver[lang]}</b></td><td>${r.detail[lang]}</td></tr>`).join('')}</table>
+<a href="#" onclick="window.close()" style="display:inline-block;margin-top:15px;background:#2563eb;color:white;padding:9px 18px;border-radius:20px;text-decoration:none">← Close</a></div></body></html>`;
+let blob=new Blob([html],{type:'text/html'});window.open(URL.createObjectURL(blob),'_blank');
+}
+function setLang(l){
+ lang=l;
+ document.querySelectorAll('.lang button').forEach(b=>b.classList.remove('active'));
+ document.getElementById('b-'+l).classList.add('active');
+ render();
+ document.getElementById('cBody').innerHTML='';
+}
+function add(t,w){let d=document.createElement('div');d.className='msg '+w;d.innerText=t;let b=document.getElementById('cBody');b.appendChild(d);b.scrollTop=99999}
+
+// FIXED SEND FUNCTION - ONAMA PRASHNETA UTHARA DENWA
+function send(){
+let inp=document.getElementById('cIn');let txt=inp.value.trim();if(!txt)return;add(txt,'user');inp.value='';
+let low=txt.toLowerCase();let found=null;
+for(let item of KNOWLEDGE){
+ for(let key of item.k){
+  if(low.includes(key)){found=item;break;}
+ }
+ if(found) break;
+}
+let reply;
+if(found){
+ reply = found[lang] || found['si'];
+} else {
+ // Fallback - onama deyak ahuwath uthara denawa
+ if(low.includes('kauda') || low.includes('who') || low.includes('yanu')){
+  reply = lang==='si' ? 'Oya ahuwa "'+txt+'" - Mama danne OS gana witharai nemei, founders la ganauth dannawa! Bill Gates = Microsoft, Steve Jobs = Apple, Linus Torvalds = Linux, Mark Zuckerberg = Facebook. Thawa ahanna!' : 'You asked "'+txt+'" - I know OS and founders! Bill Gates=Microsoft, Steve Jobs=Apple, Linus=Linux, Mark=Facebook. Ask more!';
+ } else {
+  reply = lang==='si' ? 'Mata "'+txt+'" kiyana eka therune na, eth mama OS, founders, IT Day gana okkoma dannawa. Bill Gates, Steve Jobs, Linux, Windows kiyala ahala balanna!' : 'I did not fully understand "'+txt+'", but I know OS, founders, IT Day. Try Bill Gates, Steve Jobs, Linux, Windows!';
+ }
+}
+setTimeout(()=>add(reply,'bot'),400);
+}
+setLang('si');
+</script>
+</body>
+</html>
